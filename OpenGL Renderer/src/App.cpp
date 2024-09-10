@@ -70,6 +70,7 @@ int main()
 
     //glUseProgram(shaderProgram);
     myShader.use();
+    
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -81,6 +82,7 @@ int main()
 
         /* Triangle drawing code */
         glBindVertexArray(VAO);
+
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         /* Swap front and back buffers */
