@@ -1,18 +1,23 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <math.h>
 
 const char* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
+"layout (location = 1) in vec3 aColor;\n"
+"out vec3 vertexColor;\n"
 "void main()\n"
 "{\n"
 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"   vertexColor = aColor;\n"
 "}\0";
 
 const char* fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
+"in vec3 vertexColor;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"   FragColor = vec4(vertexColor,1.0);\n"
 "}\0";
 
 
@@ -58,22 +63,22 @@ int main()
     glDeleteShader(fragmentShader);
 
     float vertices[] = {
-    0.5f, 0.5f, 0.0f,    //top right
-    0.5f, -0.5f, 0.0f,   //bottom right
-    -0.5f, -0.5f, 0.0f,  //bottom left
-    -0.5f, 0.5f, 0.0f   //top left
+        // positions         // colors
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
+         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top
     };
 
-    unsigned int indices[] = {
-        0,1,3,           //first triangle
-        1,2,3            //second triangle
-    };
+    //unsigned int indices[] = {
+    //    0,1,3,           //first triangle
+    //    1,2,3            //second triangle
+    //};
 
     /* Generate buffers and vertex arrays */
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    //glGenBuffers(1, &EBO);
 
     /* Bind it to a ARRAY Buffer type
     * Load vertices data into the VBO
@@ -83,8 +88,8 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     /* Linking vertex attributes
     * FIRST PARAM - Attribute to configure, location = 0 refer to Vertex Shader
@@ -93,11 +98,16 @@ int main()
     * FOURTH PARAM - Irrelevant
     * FIFTH PARAM - Space between consecutive vertex attributes
     * SIXTH PARAM - Some kind of offset of where the position data begins in the buffer */
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    glUseProgram(shaderProgram);
+
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glBindVertexArray(0);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -108,9 +118,15 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         /* Triangle drawing code */
-        glUseProgram(shaderProgram);
+        //float timeValue = glfwGetTime();
+        //float redValue = (sin(timeValue) / 2.0f) + 0.5f;
+        //float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+        //float blueValue = (sin(timeValue) / 2.0f) + 0.5f;
+        //int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+        //glUniform4f(vertexColorLocation, redValue, greenValue, blueValue, 1.0f);
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
