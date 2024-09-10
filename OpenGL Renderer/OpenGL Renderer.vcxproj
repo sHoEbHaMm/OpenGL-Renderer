@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="..\Dependencies\GLFW\include\glad\glad.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fshader.vs" />
