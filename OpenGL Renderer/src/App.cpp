@@ -259,7 +259,8 @@ int main()
         /* Poll for and process events */
         glfwPollEvents();
     }
-
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
     glfwTerminate();
     return 0;
 }
